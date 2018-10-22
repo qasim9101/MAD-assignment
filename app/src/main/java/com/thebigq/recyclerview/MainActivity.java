@@ -8,18 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +18,6 @@ public class MainActivity extends AppCompatActivity {
     private List<ListItem> menuItems = new ArrayList<>();
     private Button help;
     private Button order;
-    private final String URL_DATA = "https://api.myjson.com/bins/eh0ns";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,50 +54,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void createMenu() {
 
-        //for(int i=0;i<5;i++)
-        //{
-        //    menuItems.add( new ListItem( "Menu Item " + i, "this food is yummy"));
-        //}
+        for(int i=0;i<5;i++)
+        {
+            menuItems.add( new ListItem( "Menu Item " + i, "this food is yummy"));
+        }
 
-        ProgressDialog pd = new ProgressDialog(this);
-        pd.setMessage("Loading Data...");
-        pd.show();
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET,
-                URL_DATA,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-
-                            JSONObject jsonObject = new JSONObject(response);
-                            JSONArray array = jsonObject.getJSONArray("menu");
-                            for(int i=0;i<array.length();i++)
-                            {
-                                JSONObject o = array.getJSONObject(i);
-                                ListItem item = new ListItem(
-                                        o.getString("name"),
-                                        o.getString("desc"),
-                                        o.getString("img")
-                                );
-                                menuItems.add(item);
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-
-                    }
-                });
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
     }
 
     public void sendHelp(){
