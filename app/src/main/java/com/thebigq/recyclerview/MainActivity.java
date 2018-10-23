@@ -1,13 +1,19 @@
 package com.thebigq.recyclerview;
 
-import android.app.ProgressDialog;
+
+import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.p2p.WifiP2pManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,11 +28,17 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
+
     private List<ListItem> menuItems;
+
     private Button help;
+    private WifiP2pManager mManager;
+    private WifiP2pManager.Channel mChannel;
+    private BroadcastReceiver mReceiver;
+
     private Button order;
 
-    private DatabaseReference database;
+    //private DatabaseReference database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,38 +46,43 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         help = (Button) findViewById(R.id.help);
-
-        order = (Button) findViewById(R.id.order);
-
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this ));
-
-        database = FirebaseDatabase.getInstance().getReference("menu");
-        //createMenu();
-        menuItems = new ArrayList<>();
-        addMenu();
-
-        adapter = new MyAdapter(menuItems, "Main",this);
-        recyclerView.setAdapter(adapter);
-
+        mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
+        mChannel = mManager.initialize(this, getMainLooper(), null);
+        mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel, this);
         help.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendHelp();
+
             }
         });
+
+
+
+        order = (Button) findViewById(R.id.order);
         order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 placeOrder();
             }
         });
+
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        menuItems = new ArrayList<>();
+        createMenu();
+
+        adapter = new MyAdapter(this, menuItems);
+        recyclerView.setAdapter(adapter);
+
     }
 
-    public void addMenu() {
+    /*public void addMenu() {
 
-        database.addValueEventListener(new ValueEventListener() {
+        database = FirebaseDatabase.getInstance().getReference("menu");
+        database.addValueEventListener( new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -73,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
                     ListItem listItem = menuSnapshot.getValue( ListItem.class );
                     menuItems.add( listItem );
+
                 }
             }
 
@@ -81,37 +99,21 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-    }
+    }*/
 
     public void createMenu() {
 
-        String id = "1";
-        String name = "Burger";
-        String desc = "Glorified sandwhich.";
-        ListItem listItem = new ListItem(id, name, desc );
-        database.child(id).setValue(listItem);
-
-        id = "2";
-        name = "Steak";
-        desc = "Meat so tuogh it beat up chuck norris whilst eating a bowl of nails.";
-        listItem = new ListItem(id, name, desc );
-        database.child(id).setValue(listItem);
-
-        id = "3";
-        name = "Parmigiana";
-        desc = "Am i spelling that right? anyways it still delicous.";
-        listItem = new ListItem(id, name, desc );
-        database.child(id).setValue(listItem);
-
-        id = "4";
-        name = "Pie";
-        desc = "Ugggggggggg (drools) piiiiiiiiiiiieeeeee.";
-        listItem = new ListItem(id, name, desc );
-        database.child(id).setValue(listItem);
+        for(int i=0; i<5; i++)
+        {
+            String id = ""+i;
+            String name = "Menu Item " + i;
+            String desc = "this is delicous, yummy yummy";
+            ListItem listItem = new ListItem( id, name, desc );
+            menuItems.add(listItem);
+        }
     }
 
     public void sendHelp(){
-
 
     }
 

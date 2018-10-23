@@ -9,6 +9,7 @@ public class ListItem {
     public ListItem() { }
 
     public ListItem(String id, String head, String desc) {
+        this.id = id;
         this.head = head;
         this.desc = desc;
     }

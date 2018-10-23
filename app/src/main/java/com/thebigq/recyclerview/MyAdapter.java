@@ -15,41 +15,40 @@ import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
-    private List<ListItem> listItems;
     private Context context;
-    private String actvity;
+    private List<ListItem> listItems;
 
-    public MyAdapter(List<ListItem> listItems, String activity, Context context) {
-        this.listItems = listItems;
+    public MyAdapter(Context context, List<ListItem> listItems) {
         this.context = context;
-        this.actvity = activity;
+        this.listItems = listItems;
     }
 
     @NonNull
     @Override
-    public MyAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext())
-                 .inflate(R.layout.list_item, viewGroup, false);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.list_item, parent, false);
+
         return new ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyAdapter.ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
 
         final ListItem listItem = listItems.get(i);
-
-        viewHolder.head.setText(listItem.getHead());
-        viewHolder.desc.setText(listItem.getDesc());
+        viewHolder.textViewName.setText(listItem.getHead());
+        viewHolder.textViewDesc.setText(listItem.getDesc());
 
         viewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "you clicked " + listItem.getHead(), Toast.LENGTH_LONG).show();
 
-                Intent intent = new Intent(context, ItemActivity.class);
-                intent.putExtra("head", listItem.getHead() );
-                context.startActivity(intent);
+                Toast.makeText(context, "You clicked "+listItem.getHead(), Toast.LENGTH_LONG).show();
 
+                Intent i = new Intent(context, ItemActivity.class);
+                i.putExtra("head", listItem.getHead());
+                i.putExtra("desc", listItem.getDesc());
+                context.startActivity(i);
             }
         });
 
@@ -60,18 +59,18 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         return listItems.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder{
 
-        public TextView head;
-        public TextView desc;
+        public TextView textViewName;
+        public TextView textViewDesc;
         public LinearLayout linearLayout;
 
-        public ViewHolder(@NonNull View itemView) {
+        public  ViewHolder(View itemView) {
             super(itemView);
 
-            head = (TextView) itemView.findViewById(R.id.textViewHead);
-            desc = (TextView) itemView.findViewById(R.id.textViewDesc);
-            ;linearLayout = (LinearLayout) itemView.findViewById(R.id.linearLayout);
+            textViewName = (TextView) itemView.findViewById(R.id.textViewName);
+            textViewDesc = (TextView) itemView.findViewById(R.id.textViewDesc);
+            linearLayout = (LinearLayout) itemView .findViewById(R.id.linearLayout);
         }
     }
 }
