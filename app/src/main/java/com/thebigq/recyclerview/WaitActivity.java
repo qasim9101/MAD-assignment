@@ -10,6 +10,6 @@ public class WaitActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wait);
 
-        // this is where the people wait for meal to arrive
+        // this is where the app receives indications on th progress of the meal
     }
 }

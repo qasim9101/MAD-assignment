@@ -16,11 +16,13 @@ import java.util.List;
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     private Context context;
-    private List<ListItem> listItems;
+    private List<Object> listItems;
+    private int ACTIVITY;
 
-    public MyAdapter(Context context, List<ListItem> listItems) {
+    public MyAdapter(Context context, List<Object> listItems, int ACTIVITY) {
         this.context = context;
         this.listItems = listItems;
+        this.ACTIVITY = ACTIVITY;
     }
 
     @NonNull
@@ -35,23 +37,30 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
 
-        final ListItem listItem = listItems.get(i);
-        viewHolder.textViewName.setText(listItem.getHead());
-        viewHolder.textViewDesc.setText(listItem.getDesc());
+        if( ACTIVITY == 1 ){
 
-        viewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            final ListItem listItem = (ListItem) listItems.get(i);
+            viewHolder.textViewName.setText(listItem.getHead());
+            viewHolder.textViewDesc.setText(listItem.getDesc());
 
-                Toast.makeText(context, "You clicked "+listItem.getHead(), Toast.LENGTH_LONG).show();
+            viewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-                Intent i = new Intent(context, ItemActivity.class);
-                i.putExtra("head", listItem.getHead());
-                i.putExtra("desc", listItem.getDesc());
-                context.startActivity(i);
-            }
-        });
+                    Toast.makeText(context, "You clicked "+listItem.getHead(), Toast.LENGTH_LONG).show();
 
+                    Intent i = new Intent(context, ItemActivity.class);
+                    i.putExtra("head", listItem.getHead());
+                    i.putExtra("desc", listItem.getDesc());
+                    context.startActivity(i);
+                }
+            });
+        }else if( ACTIVITY == 2 ){
+
+            final Order order = (Order) listItems.get(i);
+            viewHolder.textViewName.setText(order.getName());
+            viewHolder.textViewDesc.setText( "Quantity: " + order.getQuantity());
+        }
     }
 
     @Override

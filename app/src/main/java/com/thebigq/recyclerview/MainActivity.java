@@ -1,25 +1,15 @@
 package com.thebigq.recyclerview;
 
 
-import android.bluetooth.BluetoothAdapter;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.net.wifi.p2p.WifiP2pManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,14 +18,10 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
-
-    private List<ListItem> menuItems;
+    private List<Object> menuItems;
+    private int MAIN_ACTIVITY = 1;
 
     private Button help;
-    private WifiP2pManager mManager;
-    private WifiP2pManager.Channel mChannel;
-    private BroadcastReceiver mReceiver;
-
     private Button order;
 
     //private DatabaseReference database;
@@ -46,13 +32,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         help = (Button) findViewById(R.id.help);
-        mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
-        mChannel = mManager.initialize(this, getMainLooper(), null);
-        mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel, this);
         help.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                sendHelp();
             }
         });
 
@@ -72,9 +56,10 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         menuItems = new ArrayList<>();
+        //addMenu();
         createMenu();
 
-        adapter = new MyAdapter(this, menuItems);
+        adapter = new MyAdapter(this, menuItems, MAIN_ACTIVITY);
         recyclerView.setAdapter(adapter);
 
     }
@@ -115,13 +100,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void sendHelp(){
 
+        // where the program sends a message to help staff that they need help
     }
 
     public void placeOrder() {
 
         Intent i = new Intent(MainActivity.this, OrderActivity.class);
         startActivity(i);
-
-
     }
 }
